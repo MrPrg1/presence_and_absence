@@ -44,7 +44,7 @@ class PresenceAndAbsenceView(APIView):
 
         def get_object(self, nationalCode):
             student = StudentModel.objects.filter(nationalCode=nationalCode)
-            if student.nationalCode
+            if student.nationalCodee
 
 
 
