@@ -1,0 +1,9 @@
+{% extends "<presence_and_absence>
+<templates>
+<registration>
+<logged_out></logged_out>.html" %}
+ 
+{% block content %}
+  <p>Logged out!</p>
+  <a href="{% url 'login'%}">Click here to login again.</a>
+{% endblock %}
