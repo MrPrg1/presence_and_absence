@@ -38,12 +38,27 @@ class AllScoreView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+    def post(self, request):
+        serializer = ScoreSerializer(data=request.data)
+        if serializer.is_valid:
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+    def delete(self, request):
+        queryset = ScoreModel.objects.filter(id=request['id'])
+        queryset.delete()
+        return Response(None, status=status.HTTP_404_NOT_FOUND)
 
 
-
-
+    def put(self, request):
+        queryset = ScoreModel.objects.filter(id=request['id'])
+        serializer = ScoreSerializer(queryset, data=request.data)
+        if serializer.is_valid:
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(None, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -90,7 +105,6 @@ class PresenceAndAbsenceView(APIView):
         return Response(None, status=status.HTTP_400_BAD_REQUEST)
 
 
-
     def put(self, request, date):
         presenceAndAbsence = self.get_object(date)
         serializer = PresenceAndAbsenceSerializer(presenceAndAbsence, data=request.data)
@@ -103,20 +117,14 @@ class PresenceAndAbsenceView(APIView):
 
 
 
-
-
-
 class AllStudentView(APIView):
     permission_classes = [permissions.AllowAny]
     
-    def get_object(self, request):
+    def get(self, request):
         student = StudentModel.objects.all()
-        if student:
-            serializer = StudentSerializer(student, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-
+        serializer = StudentSerializer(student, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+     
 
 
 class StudentView(APIView):
@@ -172,12 +180,6 @@ class StudentView(APIView):
 
 
 
-
-
-
-
-
-
 class AllClassView(APIView):
     permission_classes = [permissions.AllowAny]
     
@@ -187,7 +189,6 @@ class AllClassView(APIView):
             serializer = ClassSerializer(clas, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_404_NOT_FOUND)
-
 
 
 
@@ -231,7 +232,6 @@ class ClassView(APIView):
             return Response(None, status=status.HTTP_400_BAD_REQUEST)
 
         
-
 
     def put(self, request, nationalCode):
         clas = self.get_object(name)

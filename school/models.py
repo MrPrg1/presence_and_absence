@@ -87,7 +87,7 @@ class StudentSerializer(ModelSerializer):
     class Meta:
         model = StudentModel
         fields = ['id', 'name', 'lastName', 'nationalCode', 'phoneNumber', 'fatherPhoneNumber', 'fatherName', 'homePhoneNumber', 'dateOfBirth', 'email', 'address', 'clas', 'image', 'degree']
-
+        depth = 3
 
 
 
@@ -95,7 +95,7 @@ class ClassSerializer(ModelSerializer):
     class Meta:
         model = ClassModel
         fields = '__all__'
-        depth = 2
+        depth = 3
 
 
 
@@ -105,7 +105,7 @@ class PresenceAndAbsenceSerializer(ModelSerializer):
     class Meta:
         model = PresenceAndAbsenceModel
         fields = '__all__'
-        # depth = 1
+        depth = 3
 
 
 
@@ -115,7 +115,7 @@ class ScoreSerializer(ModelSerializer):
     class Meta:
         model = ScoreModel
         fields = '__all__'
-        # depth = 1
+        depth = 3
 
 
 # class StudentModel(BaseModel):
