@@ -14,12 +14,30 @@ from rest_framework.response import Response
 from django.shortcuts import get_list_or_404, get_object_or_404
 from rest_framework import generics
 from rest_framework import permissions
+from django_jalali.db import models as jmodels
 
 
 
-class ScoreView(generics.ListAPIView):
-    queryset = ScoreModel.objects.all()
-    serializer_class = ScoreSerializer
+
+class AllScoreView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    # def get(self, request, sId):
+    #     student = StudentModel.objects.filter(nationalCode=sId)
+    #     if student:
+    #         score = ScoreModel.objects.filter(student=student)
+    #         if score:
+    #             serializer = ScoreSerializer(score, many=True)
+    #             return Response(serializer.data, status=status.HTTP_200_OK)
+    #         return Response(None, status=status.HTTP_404_NOT_FOUND)
+    #     return Response(None, status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request):
+        queryset = ScoreModel.objects.all()
+        serializer = ScoreSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 
 
@@ -40,14 +58,46 @@ class AllPresenceAndAbsenceView(APIView):
 
 class PresenceAndAbsenceView(APIView):
     permission_classes = [permissions.AllowAny]
-    try:
+    def get_object(self, date):
+        try:
+            presenceAndAbsence = PresenceAndAbsenceModel.objects.filter(data=date)
+            return presenceAndAbsence
+        except PresenceAndAbsenceModel.DoesNotExist:
+            return Response(None, status=status.HTTP_404_NOT_FOUND)
 
-        def get_object(self, nationalCode):
-            student = StudentModel.objects.filter(nationalCode=nationalCode)
-            if student.nationalCode
+    
+    def get(self, request, date):
+        presenceAndAbsence = self.get_object(date)
+        if presenceAndAbsence:
+            serializer = PresenceAndAbsenceSerializer(presenceAndAbsence, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(None, status=status.HTTP_404_NOT_FOUND)
+ 
+
+    def delete(request, data):
+        presenceAndAbsence = self.get_object(date)
+        if presenceAndAbsence:
+            presenceAndAbsence.delete()
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(None, status=status.HTTP_404_NOT_FOUND)
+
+
+    def post(self, request):
+        serializer = PresenceAndAbsenceSerializer(data=request.data)
+        if serializer.is_valid:
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(None, status=status.HTTP_400_BAD_REQUEST)
 
 
 
+    def put(self, request, date):
+        presenceAndAbsence = self.get_object(date)
+        serializer = PresenceAndAbsenceSerializer(presenceAndAbsence, data=request.data)
+        if serializer.is_valid:
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -59,13 +109,12 @@ class PresenceAndAbsenceView(APIView):
 class AllStudentView(APIView):
     permission_classes = [permissions.AllowAny]
     
-    def get(self, request):
+    def get_object(self, request):
         student = StudentModel.objects.all()
         if student:
             serializer = StudentSerializer(student, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_404_NOT_FOUND)
-
 
 
 

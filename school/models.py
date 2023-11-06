@@ -4,6 +4,10 @@ from django.utils import timezone
 from core.models import BaseModel
 from rest_framework.serializers import ModelSerializer
 from core.models import BaseModel
+from datetime import datetime
+from django_jalali.db import models as jmodels
+
+
 
 
 
@@ -63,8 +67,8 @@ class ClassModel(BaseModel):
 class PresenceAndAbsenceModel(models.Model):
     student = models.ForeignKey(StudentModel, on_delete=models.CASCADE, related_name='user')
     presence = models.IntegerField(default=2, choices=CHOICES_NAME)
-    data = models.DateTimeField(db_index=True, default=timezone.now)
-
+    data = models.DateField(auto_now=False, auto_now_add=False, default=datetime.now)
+    # data = jmodels.jDateTimeField(auto_now_add=True)
 
 
 
